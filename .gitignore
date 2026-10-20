@@ -1,0 +1,18 @@
+# Zephyr build output
+build/
+twister-out*/
+
+# Compiled binaries and object files
+*.o
+*.obj
+*.elf
+*.bin
+*.hex
+*.map
+
+# Editor and OS files
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
