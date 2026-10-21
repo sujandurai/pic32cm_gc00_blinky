@@ -44,6 +44,10 @@ This application implements a custom multi-phase blinking sequence:
 
 ## Hardware Specifications
 
+<p align="center">
+  <img src="assets/board.png" alt="Microchip PIC32CM GC00 Curiosity Pro Evaluation Kit" width="650"/>
+</p>
+
 | Parameter | Specification | Details |
 | :--- | :--- | :--- |
 | **Board Name** | PIC32CM GC00 Curiosity Pro | Evaluation Kit |
@@ -89,6 +93,10 @@ The PIC32CM GC00 Curiosity Pro routes dedicated user peripherals through Microch
 | **Total Super-Period** | — | `5000 ms` | Complete cycle duration ($4\text{ s} + 1\text{ s} = 5\text{ s}$) |
 
 ### Timing Waveform Diagram
+
+<p align="center">
+  <img src="assets/pic32cm_blinky_timing_pattern.png" alt="Blinky Application Timing Pattern & Hardware Overview" width="850"/>
+</p>
 
 ```text
        |<-- 800ms -->|
@@ -251,6 +259,10 @@ source .venv/bin/activate
 ---
 
 ## Serial Console Output
+
+<p align="center">
+  <img src="assets/pic32cm_blinky_timing_and_output.png" alt="Blinky Application Timing Pattern and Serial Telemetry" width="850"/>
+</p>
 
 Connect to the virtual COM port exposed by the onboard debugger (e.g. `/dev/ttyACM0` on Linux or `COMx` on Windows) at **115200 baud, 8N1**:
 
