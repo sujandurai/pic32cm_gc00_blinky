@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 850 360" width="100%" height="360">
+  <defs>
+    <style>
+      .hdr { font-family: 'DejaVu Sans', sans-serif; font-size: 13px; font-weight: bold; }
+      .sub { font-family: 'DejaVu Sans', sans-serif; font-size: 11px; fill: #444; }
+      .box { rx: 6; stroke-width: 1.8; }
+      .arrow { stroke: #1b4f8a; stroke-width: 2.2; fill: none; marker-end: url(#arrowhead); }
+    </style>
+    <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#1b4f8a" />
+    </marker>
+  </defs>
+
+  <rect x="5" y="5" width="840" height="350" rx="8" fill="#fdfdfd" stroke="#dcdcdc" stroke-width="1.5"/>
+
+  <!-- Layer 1: Application -->
+  <rect x="30" y="25" width="790" height="60" class="box" fill="#e8f4fd" stroke="#1b4f8a"/>
+  <text x="50" y="50" class="hdr" fill="#1b4f8a">1. Application Layer (src/main.c)</text>
+  <text x="50" y="70" class="sub">Portable C logic: k_msleep(ON_TIME), gpio_pin_set_dt(&amp;led, 1), printf() serial telemetry</text>
+
+  <!-- Connectors -->
+  <line x1="220" y1="85" x2="220" y2="115" class="arrow"/>
+  <line x1="620" y1="85" x2="620" y2="115" class="arrow"/>
+
+  <!-- Layer 2: Zephyr OS Subsystems -->
+  <rect x="30" y="115" width="380" height="75" class="box" fill="#f3f0ff" stroke="#6741d9"/>
+  <text x="50" y="140" class="hdr" fill="#6741d9">2A. Zephyr Devicetree Subsystem</text>
+  <text x="50" y="160" class="sub">Resolves DT_ALIAS(led0) at compile-time</text>
+  <text x="50" y="177" class="sub">Extracts pin PA20 &amp; GPIO_ACTIVE_LOW flags</text>
+
+  <rect x="440" y="115" width="380" height="75" class="box" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="460" y="140" class="hdr" fill="#0ca678">2B. Zephyr Kernel &amp; GPIO Driver API</text>
+  <text x="460" y="160" class="sub">Tickless idle scheduler, k_msleep() yield</text>
+  <text x="460" y="177" class="sub">Universal GPIO interface: gpio_pin_configure_dt()</text>
+
+  <!-- Connectors -->
+  <line x1="220" y1="190" x2="425" y2="220" class="arrow"/>
+  <line x1="630" y1="190" x2="425" y2="220" class="arrow"/>
+
+  <!-- Layer 3: Hardware Drivers -->
+  <rect x="30" y="220" width="790" height="55" class="box" fill="#fff4e6" stroke="#f76707"/>
+  <text x="50" y="243" class="hdr" fill="#d9480f">3. Microchip Low-Level HAL &amp; Drivers (gpio_mchp_port_g1.c)</text>
+  <text x="50" y="262" class="sub">Translates generic Zephyr calls into physical PORT register writes (PORTA-&gt;OUTTGL, DIRSET)</text>
+
+  <!-- Connector -->
+  <line x1="425" y1="275" x2="425" y2="295" class="arrow"/>
+
+  <!-- Layer 4: Physical Silicon & Hardware -->
+  <rect x="30" y="295" width="790" height="50" class="box" fill="#ffe3e3" stroke="#e03131"/>
+  <text x="50" y="318" class="hdr" fill="#c92a2a">4. Microchip PIC32CM GC00 Silicon &amp; Curiosity Pro Board</text>
+  <text x="50" y="335" class="sub">ARM Cortex-M23 @ 48 MHz | Pin PA20 drives Yellow LED0 (Active-Low) | UART on PA04</text>
+</svg>
