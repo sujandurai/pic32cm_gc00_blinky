@@ -8,9 +8,14 @@
 
 An enterprise-ready, standalone **Zephyr RTOS** demonstration application developed for the **Microchip PIC32CM GC00 Curiosity Pro** evaluation kit. The application drives the onboard user LED with a deterministic, repeating pulse pattern using Zephyr's Devicetree-driven GPIO subsystem.
 
+> 🎓 **Complete Educational Course & Student Guide Available!**
+> Looking for a thorough beginner tutorial? Read our **[Comprehensive Student & Beginner's Guide to Zephyr RTOS](STUDENT_GUIDE.md)** covering RTOS fundamentals, why Zephyr was created, active-low electrical logic, line-by-line code explanation, and hands-on lab challenges.
+
 ---
 
 ## Table of Contents
+
+- [Student & Beginner Guide](STUDENT_GUIDE.md)
 
 - [Overview](#overview)
 - [Hardware Specifications](#hardware-specifications)

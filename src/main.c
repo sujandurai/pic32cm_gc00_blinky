@@ -10,8 +10,8 @@
 
 /* Timing configurations (in milliseconds) */
 #define SLEEP_TIME_MS   1000    /* Pause time: 1000 ms (1 second) */
-#define ON_TIME         350     /* LED ON time: 350 ms */
-#define OFF_TIME        450     /* LED OFF time: 450 ms */
+#define ON_TIME         500	    /* LED ON time: 350 ms */
+#define OFF_TIME        2000     /* LED OFF time: 450 ms */
 
 /* The devicetree node identifier for the "led0" alias. */
 #define LED0_NODE DT_ALIAS(led0)
