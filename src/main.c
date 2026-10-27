@@ -14,66 +14,94 @@
 #define OFF_TIME        450     /* LED OFF time: 450 ms */
 #define BLINK_COUNT     5
 
-/*
- * Logical levels. gpio_pin_set_dt() uses logical values, so 1 = ON when the
- * devicetree flags the LED correctly (GPIO_ACTIVE_LOW/HIGH).
- * If your LED behaves inverted, swap these two values.
- */
-#define LED_ON_LEVEL    0
-#define LED_OFF_LEVEL   1
-
 /* The devicetree node identifier for the "led0" alias. */
 #define LED0_NODE DT_ALIAS(led0)
 
 static const struct gpio_dt_spec led = GPIO_DT_SPEC_GET(LED0_NODE, gpios);
 
+/* Set at startup from the pin's initial level */
+static int led_on_level;
+static int led_off_level;
+
+static int led_on(void)
+{
+	return gpio_pin_set_raw(led.port, led.pin, led_on_level);
+}
+
+static int led_off(void)
+{
+	return gpio_pin_set_raw(led.port, led.pin, led_off_level);
+}
+
 int main(void)
 {
 	int ret;
-	bool led_state;
+	int initial;
 
 	if (!gpio_is_ready_dt(&led)) {
 		return 0;
 	}
 
-	/* Initialize LED pin as output in INACTIVE (OFF) state */
-	ret = gpio_pin_configure_dt(&led, GPIO_OUTPUT_INACTIVE);
+	/* Read the pin's initial raw level before driving it */
+	ret = gpio_pin_configure(led.port, led.pin, GPIO_INPUT);
+	if (ret < 0) {
+		return 0;
+	}
+	k_msleep(10);   /* let the pin settle */
+	initial = gpio_pin_get_raw(led.port, led.pin);
+	if (initial < 0) {
+		return 0;
+	}
+
+	if (initial) {
+		/* Initially HIGH: LED is OFF when high, so ON = 0, OFF = 1 */
+		led_on_level  = 0;
+		led_off_level = 1;
+	} else {
+		/* Initially LOW: ON = 1, OFF = 0 */
+		led_on_level  = 1;
+		led_off_level = 0;
+	}
+
+	/* Now make it an output and start with LED OFF */
+	ret = gpio_pin_configure(led.port, led.pin, GPIO_OUTPUT);
+	if (ret < 0) {
+		return 0;
+	}
+	ret = led_off();
 	if (ret < 0) {
 		return 0;
 	}
 
+	printf("Initial pin level: %s -> ON = %d, OFF = %d\n\n",
+	       initial ? "HIGH" : "LOW", led_on_level, led_off_level);
+
 	while (1) {
 		/* Loop 5 times: 350 ms ON, 450 ms OFF */
 		for (int i = 0; i < BLINK_COUNT; i++) {
-			/* LED ON for 350 ms */
-			ret = gpio_pin_set_dt(&led, LED_ON_LEVEL);
+			ret = led_on();
 			if (ret < 0) {
 				return 0;
 			}
-			led_state = true;
-			printf("Iteration %d/%d - LED state: %s (350 ms ON)\n",
-			       i + 1, BLINK_COUNT, led_state ? "ON" : "OFF");
+			printf("Iteration %d/%d - LED state: ON (350 ms ON)\n",
+			       i + 1, BLINK_COUNT);
 			k_msleep(ON_TIME);
 
-			/* LED OFF for 450 ms (all 5 iterations, including the 5th) */
-			ret = gpio_pin_set_dt(&led, LED_OFF_LEVEL);
+			ret = led_off();
 			if (ret < 0) {
 				return 0;
 			}
-			led_state = false;
-			printf("Iteration %d/%d - LED state: %s (450 ms OFF)\n",
-			       i + 1, BLINK_COUNT, led_state ? "ON" : "OFF");
+			printf("Iteration %d/%d - LED state: OFF (450 ms OFF)\n",
+			       i + 1, BLINK_COUNT);
 			k_msleep(OFF_TIME);
 		}
 
 		/* After 5 iterations: LED remains OFF for 1000 ms */
-		ret = gpio_pin_set_dt(&led, LED_OFF_LEVEL);
+		ret = led_off();
 		if (ret < 0) {
 			return 0;
 		}
-		led_state = false;
-		printf("Pause - LED state: %s (1000 ms Pause)\n\n",
-		       led_state ? "ON" : "OFF");
+		printf("Pause - LED state: OFF (1000 ms Pause)\n\n");
 		k_msleep(SLEEP_TIME_MS);
 	}
 
