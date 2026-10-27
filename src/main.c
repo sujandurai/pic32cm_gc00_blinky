@@ -19,8 +19,8 @@
  * devicetree flags the LED correctly (GPIO_ACTIVE_LOW/HIGH).
  * If your LED behaves inverted, swap these two values.
  */
-#define LED_ON_LEVEL    1
-#define LED_OFF_LEVEL   0
+#define LED_ON_LEVEL    0
+#define LED_OFF_LEVEL   1
 
 /* The devicetree node identifier for the "led0" alias. */
 #define LED0_NODE DT_ALIAS(led0)
@@ -43,6 +43,7 @@ int main(void)
 	}
 
 	while (1) {
+		/* Loop 5 times: 350 ms ON, 450 ms OFF */
 		for (int i = 0; i < BLINK_COUNT; i++) {
 			/* LED ON for 350 ms */
 			ret = gpio_pin_set_dt(&led, LED_ON_LEVEL);
@@ -54,25 +55,26 @@ int main(void)
 			       i + 1, BLINK_COUNT, led_state ? "ON" : "OFF");
 			k_msleep(ON_TIME);
 
-			/* LED OFF */
+			/* LED OFF for 450 ms (all 5 iterations, including the 5th) */
 			ret = gpio_pin_set_dt(&led, LED_OFF_LEVEL);
 			if (ret < 0) {
 				return 0;
 			}
 			led_state = false;
-
-			if (i < BLINK_COUNT - 1) {
-				/* Gap between blinks: 450 ms */
-				printf("Iteration %d/%d - LED state: %s (450 ms OFF)\n",
-				       i + 1, BLINK_COUNT, led_state ? "ON" : "OFF");
-				k_msleep(OFF_TIME);
-			} else {
-				/* After the last blink, the pause replaces the 450 ms gap */
-				printf("Pause - LED state: %s (1000 ms Pause)\n\n",
-				       led_state ? "ON" : "OFF");
-				k_msleep(SLEEP_TIME_MS);
-			}
+			printf("Iteration %d/%d - LED state: %s (450 ms OFF)\n",
+			       i + 1, BLINK_COUNT, led_state ? "ON" : "OFF");
+			k_msleep(OFF_TIME);
 		}
+
+		/* After 5 iterations: LED remains OFF for 1000 ms */
+		ret = gpio_pin_set_dt(&led, LED_OFF_LEVEL);
+		if (ret < 0) {
+			return 0;
+		}
+		led_state = false;
+		printf("Pause - LED state: %s (1000 ms Pause)\n\n",
+		       led_state ? "ON" : "OFF");
+		k_msleep(SLEEP_TIME_MS);
 	}
 
 	return 0;
